@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 from datetime import datetime
 import ToolBox as tb
 sys.path.append('/home/cuizaixu_lab/fanqingchen/DATA/Code/PLSR_Prediction')
@@ -11,21 +12,22 @@ def Setparameter():
     '''
     # the path of saving file
     serverset = ['fanqingchen', 1, 1, 10, 8000, 'lab_fat_c']
-    sersavepath = '/home/cuizaixu_lab/fanqingchen/DATA/Res/Gorden_Res/server_note/'
-    scriptpath = '/home/cuizaixu_lab/fanqingchen/DATA/Code/script/Gorden_script'
-    weightpath = '/home/cuizaixu_lab/fanqingchen/DATA/Res/Gorden_Res/model_weight/'
+    sersavepath = '/home/cuizaixu_lab/fanqingchen/DATA/Res/HCP_Res/server_note/'
+    scriptpath = '/home/cuizaixu_lab/fanqingchen/DATA/Code/script/HCP_script'
+    weightpath = '/home/cuizaixu_lab/fanqingchen/DATA/Res/HCP_Res/model_weight/'
+    # loading data path
+    #datapath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_FC/ABCD_FC_10min/*.nii'   #.nii data
+    datapath = '/home/cuizaixu_lab/fanqingchen/DATA/data/Feature_Matrix/HCPfeature_0904.txt'  # feture matrix
+    labelpath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_HCP2016_FC/Label/HCPLable0904.csv'
+    covariatespath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_HCP2016_FC/Label/ageSexFd0904.csv'
 
-    #datapath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_FC/ABCD_FC_10min/*.nii' #.nii data
-    datapath = '/GPFS/cuizaixu_lab_permanent/fanqingchen/Code/FC_PLSR_Prediction/Model/feature.txt'  # feture matrix
-    labelpath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_FC/Label/ABCD_Label.csv'
-
-    covariatespath = '/home/cuizaixu_lab/fanqingchen/DATA/data/ABCD_FC/Label/ageSexFd.csv'
-    dimention = 'General'  #General Ext ADHD Int Age
-    Permutation = 0  # 1: Permutation test   0: no
-    kfold = 3  # 1:KFold 0:no
+    Permutation = 0        # 1: Permutation test   0: no
+    # TODO
+    dimention = 'General'  # General Ext ADHD Int Age
+    dataMark = 'HCP'
+    kfold = 2              # 1:KFold 0:no
     CVRepeatTimes = 101
-    dataMark = 'Gorden'
-    Time = 67  # 0 : test
+    Time = 71
 
     setparameter = {
             'serverset':         serverset,
@@ -62,18 +64,18 @@ def PLSc_RandomCV_MultiTimes(serverset, sersavepath, scriptpath, CVRepeatTimes, 
     else:
         system_cmd = 'python /home/cuizaixu_lab/fanqingchen/DATA/Code/PLSR_Prediction/FC_Prediction/fc_plsr_prediction_bagging_p.py'
     if Permutation == 0:
-        scriptfold = scriptpath + '/' + str(datetime.now().strftime('%Y_%m_%d'))+'_'+dimention
+        scriptfold = scriptpath + '/' + str(datetime.now().strftime('%Y_%m_%d'))+'_HCP_'+dimention
         if os.path.exists(scriptfold):
             return
         if not os.path.exists(scriptfold):
             os.makedirs(scriptfold)
 
-        servernotepath = sersavepath + str(datetime.now().strftime('%Y_%m_%d'))+'_'+str(Time)+'_'+dimention
+        servernotepath = sersavepath + str(datetime.now().strftime('%Y_%m_%d'))+'_HCP_'+str(Time)+'_'+dimention
         if not os.path.exists(servernotepath):
             os.makedirs(servernotepath)
 
         for i in range(1, CVRepeatTimes+1):
-            count = tb.countnum_2()
+
             script = open(scriptfold + '/' + 'Time_' + str(i) + '_' + 'script.sh', mode='w')
             script.write(Sbatch_Para)
             script.write('\n')
@@ -82,16 +84,17 @@ def PLSc_RandomCV_MultiTimes(serverset, sersavepath, scriptpath, CVRepeatTimes, 
             script.write(system_cmd)
             script.close()
             os.system('chmod +x ' + scriptfold + '/' + 'Time_' + str(i) + '_' + 'script.sh')
+            time.sleep(1)
             os.system('sbatch ' + scriptfold + '/' + 'Time_' + str(i) + '_' + 'script.sh')
     else:
-        count = tb.countnum_2()
-        scriptfold = scriptpath + '/' + str(datetime.now().strftime('%Y_%m_%d'))
+        scriptfold = scriptpath + '/' + str(datetime.now().strftime('%Y_%m_%d'))+'_'+dimention
+
         if os.path.exists(scriptfold):
             return
         if not os.path.exists(scriptfold):
             os.makedirs(scriptfold)
 
-        servernotepath = sersavepath + str(datetime.now().strftime('%Y_%m_%d')) + '_' + str(Time) + '_' + dimention
+        servernotepath = sersavepath + str(datetime.now().strftime('%Y_%m_%d')) + '_HCP_' + str(Time) + '_' + dimention
         if not os.path.exists(servernotepath):
             os.makedirs(servernotepath)
         for i in range(CVRepeatTimes):
@@ -103,6 +106,7 @@ def PLSc_RandomCV_MultiTimes(serverset, sersavepath, scriptpath, CVRepeatTimes, 
             script.write(system_cmd)
             script.close()
             os.system('chmod +x ' + scriptfold + '/' + 'Time_' + str(i) + '_' + 'script.sh')
+            time.sleep(1)
             os.system('sbatch ' + scriptfold + '/' + 'Time_' + str(i) + '_' + 'script.sh')
 
 if __name__ == '__main__':

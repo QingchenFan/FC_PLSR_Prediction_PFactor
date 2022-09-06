@@ -1,13 +1,13 @@
 # encoding: utf-8
 import numpy as np
-
+import pandas as pd
 from dingtalkchatbot.chatbot import DingtalkChatbot
 
 #generate a file
-def ToolboxCSV(filename = 'filename.csv',list=[]):
+def ToolboxCSV(filename='filename.csv',list=[]):
     path = "../Note_Res/"
     file = open(path+filename,mode='w')
-    for tra in list :
+    for tra in list:
         if(isinstance(tra,str)):
           file.write(tra)
           file.write('\n')
@@ -15,21 +15,18 @@ def ToolboxCSV(filename = 'filename.csv',list=[]):
             file.write(str(tra))
             file.write('\n')
 #generate a experiment file
-def ToolboxCSV_server(filename = 'filename.csv',list=[]):
-    path = "/home/cuizaixu_lab/fanqingchen/DATA/Res/Note_Res/"
-    file = open(path+filename,mode='w')
-    for tra in list :
-        if(isinstance(tra,str)):
-          file.write(tra)
-          file.write('\n')
-        else:
-            file.write(str(tra))
-            file.write('\n')
+def ToolboxCSV_server(numpy, featuredata='gorden', filename='filename.csv'):
+    path = '/home/cuizaixu_lab/fanqingchen/DATA/Res/Gorden_Res/Note_Res/'
+    if featuredata == 'HCP':
+       path = '/home/cuizaixu_lab/fanqingchen/DATA/Res/HCP_Res/Note_Res/'
+
+    np.savetxt(path + filename, numpy, fmt='%d')
+
 
 #Define a function that takes the upper triangle.Working with Symmetric Matrices
 def upper_tri_indexing(matirx):
     m = matirx.shape[0]
-    r, c = np.triu_indices(m,1)
+    r, c = np.triu_indices(m, 1)
     return matirx[r, c]
 
 def countnum():
