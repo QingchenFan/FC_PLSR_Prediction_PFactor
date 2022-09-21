@@ -20,7 +20,7 @@ import statsmodels.formula.api as sm
 import pingouin as pg
 sys.path.append('/home/cuizaixu_lab/fanqingchen/DATA/Code/PLSR_Prediction')
 #from step1_PLSr.step1_PLSr import Setparameter
-from step1_PLSr.step1_PLSr_HCP import Setparameter  #TODO 方便我自己，应该是只改step1中的路径就可以了
+from step1_PLSr.step1_PLSr_HCP import Setparameter  # TODO: 方便我自己，应该是只改step1中的路径就可以了
 def my_scorer(y_true, y_predicted):
     mae = np.mean(np.abs(y_true - y_predicted))
 
@@ -101,10 +101,11 @@ def PLSPrediction_Model(data_list, dimention, weightpath, Permutation, kfold, da
         if Permutation == 0:
           tb.ToolboxCSV_server(y_test, dataMark, 'test_label_bagging_' + dimention + '_' + str(Time) + '_'+str(count) + '_' + str(epoch) + '.csv')
 
+
         # Model
         # bagging,PLS
         bagging = BaggingRegressor(base_estimator=PLSRegression())
-
+#chunhui!!!shuyinuo
         # 网格交叉验证
         my_func = make_scorer(my_scorer, greater_is_better=True)
         cv_times = 2  # inner

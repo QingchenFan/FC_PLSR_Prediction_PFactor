@@ -26,7 +26,7 @@ def Setparameter():
     dimention = 'General'  # General Ext ADHD Int Age
     dataMark = 'HCP'
     kfold = 2              # 1:KFold 0:no
-    CVRepeatTimes = 101
+    CVRepeatTimes = 10
     Time = 71
 
     setparameter = {
