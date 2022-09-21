@@ -26,7 +26,7 @@ def my_scorer(y_true, y_predicted):
 
     Predict_Score_new = np.transpose(y_predicted)
     Corr = np.corrcoef(Predict_Score_new, y_true)
-    Corr = Corr[0, 1]
+    Corr = Corr[0, 1]  #
 
     error = (1/mae)+Corr
     return error
